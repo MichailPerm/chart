@@ -20,10 +20,7 @@ import { fitWidth } from "react-stockcharts/lib/helper";
 import { last } from "react-stockcharts/lib/utils";
 import {
 	Annotate,
-    SvgPathAnnotation,
     LabelAnnotation,
-	buyPath,
-	sellPath,
 } from "react-stockcharts/lib/annotation";
 import algo from "react-stockcharts/lib/algorithm";
 
@@ -43,40 +40,47 @@ class CandleStickChartWithCHMousePointer extends React.Component {
             .merge((d, c) => { d.longShort = c; });
 
         const closeFillProps = {
-            stroke: "#22a46e",
+			stroke: "#22a46e",
 			fill: "#22a46e",
         };
 
         const openFillProps = {
             stroke: "#cc4060",
 			fill: "#cc4060",
-        };
+		};
+		
+		const fontProps = {
+			fontFamily: "Glyphicons Halflings",
+			fontSize: 20,
+			opacity: 0.8,
+			y: ({ yScale, datum }) => yScale(datum.high),
+		}
 
 		const longAnnotationPropsClose = {
             ...closeFillProps,
-            y: ({ yScale, datum }) => yScale(datum.high + 40),
-			path: buyPath,
+			...fontProps,
+			text: "\ue134",
             tooltip: "Close long",
-        };
+		};
 
 		const shortAnnotationPropsClose = {
-			y: ({ yScale, datum }) => yScale(datum.high),
-            ...closeFillProps,
-			path: sellPath,
+			...closeFillProps,
+			...fontProps,
+			text: "\ue133",
 			tooltip: "Close short",
         };
 
         const longAnnotationPropsOpen = {
-            y: ({ yScale, datum }) => yScale(datum.high + 40),
-            ...openFillProps,
-			path: buyPath,
+			...openFillProps,
+			...fontProps,
+			text: "\ue134",
             tooltip: "Open long",
         };
 
 		const shortAnnotationPropsOpen = {
-			y: ({ yScale, datum }) => yScale(datum.high),
-            ...openFillProps,
-			path: sellPath,
+			...openFillProps,
+			...fontProps,
+			text: "\ue133",
 			tooltip: "Open short",
         };
 
@@ -175,16 +179,16 @@ class CandleStickChartWithCHMousePointer extends React.Component {
 						yAccessor={ema50.accessor()} fill="#cc4060"
                         lineStroke="#cc4060"
                         tooltip="Just watch"/>
-					<Annotate with={SvgPathAnnotation} when={d => d.longShort === "LONG" && d.close > d.open}
+					<Annotate with={LabelAnnotation} when={d => d.longShort === "LONG" && d.close > d.open}
 						usingProps={longAnnotationPropsClose} />
-					<Annotate with={SvgPathAnnotation} when={d => d.longShort === "SHORT" && d.close > d.open}
+					<Annotate with={LabelAnnotation} when={d => d.longShort === "SHORT" && d.close > d.open}
 						usingProps={shortAnnotationPropsClose} />
-                    <Annotate with={SvgPathAnnotation} when={d => d.longShort === "LONG" && d.close <= d.open}
+                    <Annotate with={LabelAnnotation} when={d => d.longShort === "LONG" && d.close <= d.open}
 						usingProps={longAnnotationPropsOpen} />
-					<Annotate with={SvgPathAnnotation} when={d => d.longShort === "SHORT" && d.close <= d.open}
+					<Annotate with={LabelAnnotation} when={d => d.longShort === "SHORT" && d.close <= d.open}
 						usingProps={shortAnnotationPropsOpen} />
-                    <Annotate with={LabelAnnotation} when={d => d.longShort === "SHORT" && d.close <= d.open}
-						usingProps={shortAnnotationPropsOpen} />
+                    {/* <Annotate with={LabelAnnotation} when={d => d.longShort === "SHORT" && d.close <= d.open}
+						usingProps={shortAnnotationPropsOpen} /> */}
 				</Chart>
 				<Chart
 					id={2}
